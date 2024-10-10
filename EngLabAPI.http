@@ -1,0 +1,6 @@
+@EngLabAPI_HostAddress = http://localhost:5110
+
+GET {{EngLabAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
