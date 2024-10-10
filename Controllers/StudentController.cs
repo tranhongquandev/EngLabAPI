@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
+using EngLabAPI.Command.Student;
 using EngLabAPI.Queries.Student;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +73,16 @@ namespace EngLabAPI.Controllers
         {
             var count = await _sender.Send(new CountAllStudentQuery());
             return Ok(count);
+        }
+
+
+        [HttpPost]
+        [MapToApiVersion(1)]
+        public async Task<IActionResult> Create([FromBody] CreateStudentCommand command)
+        {
+            var entity = await _sender.Send(command);
+            if (entity == 1) return Ok("Student created successfully");
+            return BadRequest("Student created failed");
         }
     }
 }
