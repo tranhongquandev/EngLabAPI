@@ -48,6 +48,8 @@ namespace EngLabAPI.Repository
             return await _context.Set<T>().FindAsync(id) ?? throw new InvalidOperationException("Entity not found");
         }
 
+       
+
         public async Task<IEnumerable<T>> GetByPageAsync(int page, int pageSize)
         {
             return await _context.Set<T>().Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();

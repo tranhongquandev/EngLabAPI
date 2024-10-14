@@ -75,6 +75,40 @@ namespace EngLabAPI.Controllers
             return Ok(count);
         }
 
+         /// <summary>
+        /// Get student by name
+        /// </summary>
+        /// <returns>Return number of student in database</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET api/v1/student/get-by-name?name=John
+        /// 
+        /// </remarks>
+        /// <response code="200">Return number of student in database</response>
+        [HttpGet]
+        [MapToApiVersion(1)]
+        [Route("get-by-name")]
+        public async Task<IActionResult> GetByName([FromQuery] GetStudentByNameQuery query)
+        {
+
+            try
+            {
+                 var result = await _sender.Send(query);
+                 return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                
+                return NotFound(ex.Message);
+            }
+            catch(InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
+        }
+
 
         [HttpPost]
         [MapToApiVersion(1)]

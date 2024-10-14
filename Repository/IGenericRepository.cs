@@ -14,6 +14,8 @@ namespace EngLabAPI.Repository
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
         Task<int> CountAllAsync();
 
+       
+
         void Update(T entity);
 
         void Add(T entity);
