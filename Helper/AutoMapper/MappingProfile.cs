@@ -10,12 +10,12 @@ namespace EngLabAPI.Helper.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<EngLabAPI.Model.Entities.Student, EngLabAPI.DTOs.StudentDTO>().ReverseMap();
+            CreateMap<EngLabAPI.Model.Entities.Student, EngLabAPI.DTOs.Student.GetStudentDTO>().ReverseMap();
             // CreateMap<EngLabAPI.Model.Entities.Student, EngLabAPI.Model.DTO.StudentCreateDTO>().ReverseMap();
             // CreateMap<EngLabAPI.Model.Entities.Student, EngLabAPI.Model.DTO.StudentUpdateDTO>().ReverseMap();
             // CreateMap<EngLabAPI.Model.Entities.Student, EngLabAPI.Model.DTO.StudentDeleteDTO>().ReverseMap();
 
-            CreateMap<EngLabAPI.Model.Entities.Teacher, EngLabAPI.DTOs.TeacherDTO>().ReverseMap();
+            CreateMap<EngLabAPI.Model.Entities.Teacher, EngLabAPI.DTOs.Teacher.GetTeacherDTO>().ReverseMap();
 
         }
     }

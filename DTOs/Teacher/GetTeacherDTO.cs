@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace EngLabAPI.DTOs
 {
-    public class TeacherDTO
+    public class GetTeacherDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set;}
 
         public string? TeacherCode { get; set; }
 

@@ -40,8 +40,7 @@ namespace EngLabAPI.Installer
 
             services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 
-            //Add MediatR
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
 
         }
     }

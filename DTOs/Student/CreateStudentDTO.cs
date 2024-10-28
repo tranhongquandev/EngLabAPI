@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MediatR;
 
-namespace EngLabAPI.Command.Student
+namespace EngLabAPI.DTOs.Student
 {
-    public class CreateStudentCommand : IRequest<int>
+    public class CreateStudentDTO
     {
 
         public string? FullName { get; set; }
@@ -18,8 +17,6 @@ namespace EngLabAPI.Command.Student
         public string? PhoneNumber { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
-
-        public DateTime EnrollmentDate { get; set; }
 
         public string? Status { get; set; }
     }

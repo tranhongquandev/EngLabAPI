@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EngLabAPI.DTOs
+namespace EngLabAPI.DTOs.Student
 {
-    public class StudentDTO
+    public class GetStudentDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set;}
 
         public string? StudentCode { get; set; }
 
