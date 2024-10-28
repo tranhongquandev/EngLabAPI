@@ -15,6 +15,10 @@ namespace EngLabAPI.Installer
 
             services.AddScoped<IStudentRepostory, StudentRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IClassRepository, ClassRepository>();
+
+
 
 
         }

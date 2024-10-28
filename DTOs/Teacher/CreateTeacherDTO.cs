@@ -5,12 +5,8 @@ using System.Threading.Tasks;
 
 namespace EngLabAPI.DTOs.Teacher
 {
-    public class GetTeacherDTO
+    public class CreateTeacherDTO
     {
-        public int Id { get; set; }
-
-        public string? TeacherCode { get; set; }
-
         public string? ImgUrl { get; set; }
 
         public string? FullName { get; set; }
@@ -30,6 +26,5 @@ namespace EngLabAPI.DTOs.Teacher
         public DateTime? EndDate { get; set; }
 
         public bool? IsActive { get; set; }
-
     }
 }
