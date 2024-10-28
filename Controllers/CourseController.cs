@@ -47,6 +47,25 @@ namespace EngLabAPI.Controllers
             }
         }
 
+        [HttpGet("count-all")]
+        public async Task<IActionResult> CountAll()
+        {
+            try
+            {
+                var results = await _courseRepository.CountAllAsync();
+                return Ok(results);
+            }
+            catch (KeyNotFoundException ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("get-by-id/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
