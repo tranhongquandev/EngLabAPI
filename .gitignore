@@ -7,8 +7,8 @@
 .env
 
 # sql-docker
-sql-server-autogenvolume
 docker-compose.yaml
+Dockerfile
 
 # User-specific files
 *.rsuser
