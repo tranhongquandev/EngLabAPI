@@ -10,7 +10,7 @@ namespace EngLabAPI.Repository
     {
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> GetByPageAsync(int page, int pageSize);
+        Task<IEnumerable<T>> GetByPageAndFilterAsync(string? name, int page, int pageSize);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
         Task<int> CountAllAsync();
 

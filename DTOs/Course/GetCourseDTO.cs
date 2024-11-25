@@ -30,5 +30,7 @@ namespace EngLabAPI.DTOs.Course
         public DateTime UpdatedDate { get; set; }
 
         public int LevelId { get; set; }
+
+        public string? LevelName { get; set; }
     }
 }

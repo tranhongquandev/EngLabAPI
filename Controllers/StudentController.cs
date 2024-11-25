@@ -26,17 +26,16 @@ namespace EngLabAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("get-by-filter")]
+        public async Task<IActionResult> GetAll(string? name, int page = 1, int pageSize = 10)
         {
             try
             {
-                var results = await _studentRepository.GetAllAsync();
+                var results = await _studentRepository.GetByPageAndFilterAsync(name, page, pageSize);
                 return Ok(_mapper.Map<IEnumerable<DTOs.Student.GetStudentDTO>>(results));
             }
             catch (KeyNotFoundException ex)
             {
-
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
@@ -44,7 +43,7 @@ namespace EngLabAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+       
 
         [HttpGet("count-all")]
         public async Task<IActionResult> CountAll()
@@ -83,43 +82,6 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpGet("get-by-page")]
-        public async Task<IActionResult> GetByPage(int page, int pageSize)
-        {
-            try
-            {
-                var results = await _studentRepository.GetByPageAsync(page, pageSize);
-                return Ok(_mapper.Map<IEnumerable<DTOs.Student.GetStudentDTO>>(results));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("get-by-name")]
-        public async Task<IActionResult> GetByName([FromQuery] string name)
-        {
-            try
-            {
-                var results = await _studentRepository.FindAsync(x => x.FullName!.Contains(name));
-                return Ok(_mapper.Map<IEnumerable<DTOs.Student.GetStudentDTO>>(results));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DTOs.Student.CreateStudentDTO studentDTO)
         {
@@ -146,7 +108,7 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody] DTOs.Student.UpdateStudentDTO studentDTO)
         {
             if (!ModelState.IsValid)

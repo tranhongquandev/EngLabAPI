@@ -28,12 +28,12 @@ namespace EngLabAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("get-by-filter")]
+        public async Task<IActionResult> GetAll(string? name, int page = 1, int pageSize = 10)
         {
             try
             {
-                var results = await _courseRepository.GetAllAsync();
+                var results = await _courseRepository.GetByPageAndFilterAsync(name, page, pageSize);
                 return Ok(_mapper.Map<IEnumerable<DTOs.Course.GetCourseDTO>>(results));
             }
             catch (KeyNotFoundException ex)
@@ -84,43 +84,6 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpGet("get-by-page")]
-        public async Task<IActionResult> GetByPage(int page, int pageSize)
-        {
-            try
-            {
-                var results = await _courseRepository.GetByPageAsync(page, pageSize);
-                return Ok(_mapper.Map<IEnumerable<DTOs.Course.GetCourseDTO>>(results));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("get-by-name")]
-        public async Task<IActionResult> GetByName([FromQuery] string name)
-        {
-            try
-            {
-                var results = await _courseRepository.FindAsync(x => x.CourseName!.Contains(name) || x.CourseCode!.Contains(name));
-                return Ok(_mapper.Map<IEnumerable<DTOs.Course.GetCourseDTO>>(results));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DTOs.Course.CreateCourseDTO courseDTO)
         {
@@ -147,7 +110,7 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody] DTOs.Course.UpdateCourseDTO updateCourseDTO)
         {
             if (!ModelState.IsValid)

@@ -5,13 +5,14 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EngLabAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EngLabAPI.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
 
-        private readonly EngLabContext _context;
+        protected readonly EngLabContext _context;
 
         public GenericRepository(EngLabContext context)
         {
@@ -50,9 +51,13 @@ namespace EngLabAPI.Repository
 
 
 
-        public async Task<IEnumerable<T>> GetByPageAsync(int page, int pageSize)
+        public async Task<IEnumerable<T>> GetByPageAndFilterAsync(string? name, int page, int pageSize)
         {
-            return await _context.Set<T>().Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            if(!name.IsNullOrEmpty())
+                return await _context.Set<T>().Where(x => x.ToString()!.Contains(name!)).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            else {
+                return await _context.Set<T>().Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            }
         }
 
         public void Remove(T entity)

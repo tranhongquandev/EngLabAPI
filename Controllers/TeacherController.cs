@@ -25,12 +25,12 @@ namespace EngLabAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("get-by-filter")]
+        public async Task<IActionResult> GetAll(string? name, int page = 1, int pageSize = 10)
         {
             try
             {
-                var results = await _teacherRepository.GetAllAsync();
+                var results = await _teacherRepository.GetByPageAndFilterAsync(name, page, pageSize);
                 return Ok(_mapper.Map<IEnumerable<DTOs.Teacher.GetTeacherDTO>>(results));
             }
             catch (KeyNotFoundException ex)
@@ -82,41 +82,9 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpGet("get-by-page")]
-        public async Task<IActionResult> GetByPage(int page, int pageSize)
-        {
-            try
-            {
-                var results = await _teacherRepository.GetByPageAsync(page, pageSize);
-                return Ok(_mapper.Map<IEnumerable<DTOs.Teacher.GetTeacherDTO>>(results));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+       
 
-        [HttpGet("get-by-name")]
-        public async Task<IActionResult> GetByName([FromQuery] string name)
-        {
-            try
-            {
-                var results = await _teacherRepository.FindAsync(x => x.FullName!.Contains(name));
-                return Ok(_mapper.Map<IEnumerable<DTOs.Teacher.GetTeacherDTO>>(results));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+       
 
 
         [HttpPost]
@@ -145,7 +113,7 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody] DTOs.Teacher.UpdateTeacherDTO teacherDTO)
         {
             if (!ModelState.IsValid)
