@@ -17,6 +17,9 @@ namespace EngLabAPI.DTOs.Student
         public string? PhoneNumber { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
+        public DateTime EnrollmentDate { get; set; }
+
+
 
         public string? Status { get; set; }
     }

@@ -68,7 +68,7 @@ namespace EngLabAPI.Repository
         public async Task<bool> UpdateAsync(int id, UpdateTeacherDTO teacher)
         {
             var query = @"
-                UPDATE Teachers
+                UPDATE Teacher
                 SET 
                     TeacherCode = COALESCE(@TeacherCode, TeacherCode),
                     FullName = COALESCE(@FullName, FullName),

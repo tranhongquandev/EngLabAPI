@@ -29,8 +29,8 @@ namespace EngLabAPI.Repository
 
         public async Task<bool> CreateAsync(CreateCourseDTO courseDTO)
         {
-            var query = @"INSERT INTO Course (CourseCode, CourseName, Description, Duration, Fee, Discount, TotalFee, IsActive, CreatedDate, UpdatedDate, LevelId)
-                        VALUES (@CourseCode, @CourseName, @Description, @Duration, @Fee, @Discount, @TotalFee, @IsActive, @CreatedDate, @UpdatedDate, @LevelId)";
+            var query = @"INSERT INTO Course (CourseCode, CourseName, Description, Duration, Fee, Discount, IsActive, CreatedDate, UpdatedDate, LevelId)
+                        VALUES (@CourseCode, @CourseName, @Description, @Duration, @Fee, @Discount, @IsActive, @CreatedDate, @UpdatedDate, @LevelId)";
 
             return await _connection.ExecuteAsync(query, courseDTO) > 0;
         }
@@ -74,7 +74,6 @@ namespace EngLabAPI.Repository
                             Duration = COALESCE(@Duration, Duration),
                             Fee = COALESCE(@Fee, Fee),
                             Discount = COALESCE(@Discount, Discount),
-                            TotalFee = COALESCE(@TotalFee, TotalFee),
                             IsActive = COALESCE(@IsActive, IsActive),
                             UpdatedDate = COALESCE(@UpdatedDate, UpdatedDate),
                             LevelId = COALESCE(@LevelId, LevelId)
@@ -88,8 +87,8 @@ namespace EngLabAPI.Repository
                 courseDTO.Duration,
                 courseDTO.Fee,
                 courseDTO.Discount,
-                courseDTO.TotalFee,
                 courseDTO.IsActive,
+                courseDTO.UpdatedDate,
                 courseDTO.LevelId,
                 Id = id
             });

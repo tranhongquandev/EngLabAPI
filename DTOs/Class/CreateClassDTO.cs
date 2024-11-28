@@ -7,6 +7,8 @@ namespace EngLabAPI.DTOs.Class
 {
     public class CreateClassDTO
     {
+        public string? ClassCode { get; set; }
+
         public string? ClassName { get; set; }
 
         public DateTime? StartDate { get; set; }
