@@ -31,7 +31,7 @@ namespace EngLabAPI.Controllers
             try
             {
                 var results = await _teacherRepository.GetByPageAndFilterAsync(name, page, pageSize);
-                return Ok(_mapper.Map<IEnumerable<DTOs.Teacher.GetTeacherDTO>>(results));
+                return Ok(results);
             }
             catch (KeyNotFoundException ex)
             {
@@ -64,13 +64,13 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpGet("get-by-id/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("get-by-id/{teacherId}")]
+        public async Task<IActionResult> GetById(int teacherId)
         {
             try
             {
-                var result = await _teacherRepository.GetByIdAsync(id);
-                return Ok(_mapper.Map<DTOs.Teacher.GetTeacherDTO>(result));
+                var result = await _teacherRepository.GetByIdAsync(teacherId);
+                return Ok(result);
             }
             catch (KeyNotFoundException ex)
             {
@@ -82,12 +82,7 @@ namespace EngLabAPI.Controllers
             }
         }
 
-
-
-
-
-
-        [HttpPost]
+        [HttpPost("create-teacher")]
         public async Task<IActionResult> Create([FromBody] DTOs.Teacher.CreateTeacherDTO teacherDTO)
         {
             if (!ModelState.IsValid)
@@ -96,14 +91,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Teacher>(teacherDTO);
-                _teacherRepository.Add(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _teacherRepository.CreateAsync(teacherDTO);
                 return Ok(
                     new
                     {
                         message = "Create teacher success",
-
                     }
                 );
             }
@@ -113,8 +105,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> Update([FromBody] DTOs.Teacher.UpdateTeacherDTO teacherDTO)
+        [HttpPatch("{teacherId}")]
+        public async Task<IActionResult> Update(int teacherId, [FromBody] DTOs.Teacher.UpdateTeacherDTO teacherDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -122,14 +114,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Teacher>(teacherDTO);
-                _teacherRepository.Update(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _teacherRepository.UpdateAsync(teacherId, teacherDTO);
                 return Ok(
                     new
                     {
                         message = "Update teacher success",
-
                     }
                 );
             }
@@ -139,8 +128,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] DTOs.Teacher.DeleteTeacherDTO teacherDTO)
+        [HttpDelete("{teacherId}")]
+        public async Task<IActionResult> Delete(int teacherId)
         {
             if (!ModelState.IsValid)
             {
@@ -148,14 +137,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Teacher>(teacherDTO);
-                _teacherRepository.Remove(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _teacherRepository.DeleteAsync(teacherId);
                 return Ok(
                     new
                     {
                         message = "Delete teacher success",
-
                     }
                 );
             }

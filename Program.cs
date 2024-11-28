@@ -19,6 +19,7 @@ builder.Services.AddScoped<IStudentRepostory, StudentRepository>();
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 
 
 //Add ApiVersioning
@@ -40,6 +41,14 @@ builder.Services.AddApiVersioning(options =>
 
 builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "EngLabAPI.Session";
+    options.IdleTimeout = TimeSpan.FromDays(1);
+    options.Cookie.IsEssential = true;
+});
+
 
 builder.Services.AddRouting(option =>
 {
@@ -53,11 +62,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
-
-
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -65,6 +69,8 @@ var app = builder.Build();
 // {
 
 // }
+
+app.UseSession();
 
 app.UseSwagger();
 app.UseSwaggerUI();

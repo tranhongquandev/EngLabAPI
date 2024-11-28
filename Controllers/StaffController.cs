@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
+using EngLabAPI.DTOs.Staff;
+using EngLabAPI.Model.Entities;
 using EngLabAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace EngLabAPI.Controllers
 {
     [ApiVersion(1)]
     [ApiController]
     [Route("api/v{v:apiVersion}/[controller]")]
-    public class StudentController : ControllerBase
+    public class StaffController : ControllerBase
     {
-        private readonly IStudentRepostory _studentRepository;
+        private readonly IStaffRepository _staffRepository;
 
 
 
-        public StudentController(IStudentRepostory studentRepository)
+        public StaffController(IStaffRepository staffRepository)
         {
-            _studentRepository = studentRepository;
+            _staffRepository = staffRepository;
 
 
         }
@@ -30,11 +31,12 @@ namespace EngLabAPI.Controllers
         {
             try
             {
-                var results = await _studentRepository.GetByPageAndFilterAsync(name, page, pageSize);
+                var results = await _staffRepository.GetByPageAndFilterAsync(name, page, pageSize);
                 return Ok(results);
             }
             catch (KeyNotFoundException ex)
             {
+
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
@@ -49,7 +51,7 @@ namespace EngLabAPI.Controllers
         {
             try
             {
-                var results = await _studentRepository.CountAllAsync();
+                var results = await _staffRepository.CountAllAsync();
                 return Ok(results);
             }
             catch (KeyNotFoundException ex)
@@ -63,12 +65,12 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpGet("get-by-id/{studentId}")]
-        public async Task<IActionResult> GetById(int studentId)
+        [HttpGet("get-by-id/{staffId}")]
+        public async Task<IActionResult> GetById(int staffId)
         {
             try
             {
-                var result = await _studentRepository.GetByIdAsync(studentId);
+                var result = await _staffRepository.GetByIdAsync(staffId);
                 return Ok(result);
             }
             catch (KeyNotFoundException ex)
@@ -81,8 +83,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPost("create-student")]
-        public async Task<IActionResult> Create([FromBody] DTOs.Student.CreateStudentDTO studentDTO)
+        [HttpPost("create-staff")]
+        public async Task<IActionResult> Create([FromBody] DTOs.Staff.CreateStaffDTO staffDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -90,32 +92,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var result = await _studentRepository.CreateAsync(studentDTO);
-                return Ok(new
-                {
-                    message = "Create student success",
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPatch("{studentId}")]
-        public async Task<IActionResult> Update(int studentId, [FromBody] DTOs.Student.UpdateStudentDTO studentDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                var result = await _studentRepository.UpdateAsync(studentId, studentDTO);
+                var result = await _staffRepository.CreateAsync(staffDTO);
                 return Ok(
                     new
                     {
-                        message = "Update student success",
+                        message = "Create staff success",
                     }
                 );
             }
@@ -125,8 +106,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpDelete("{studentId}")]
-        public async Task<IActionResult> Delete(int studentId)
+        [HttpPatch("{staffId}")]
+        public async Task<IActionResult> Update(int staffId, [FromBody] DTOs.Staff.UpdateStaffDTO updateStaffDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -134,11 +115,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var result = await _studentRepository.DeleteAsync(studentId);
+                var result = await _staffRepository.UpdateAsync(staffId, updateStaffDTO);
                 return Ok(
                     new
                     {
-                        message = "Delete student success",
+                        message = "Update staff success",
                     }
                 );
             }
@@ -148,5 +129,23 @@ namespace EngLabAPI.Controllers
             }
         }
 
+        [HttpDelete("{staffId}")]
+        public async Task<IActionResult> Delete(int staffId)
+        {
+            try
+            {
+                var result = await _staffRepository.DeleteAsync(staffId);
+                return Ok(
+                    new
+                    {
+                        message = "Delete staff success",
+                    }
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

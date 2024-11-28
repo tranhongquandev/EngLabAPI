@@ -7,6 +7,7 @@ namespace EngLabAPI.DTOs.Course
 {
     public class CreateCourseDTO
     {
+        public string? CourseCode { get; set; }
 
         public string? CourseName { get; set; }
 

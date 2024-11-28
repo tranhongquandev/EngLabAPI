@@ -65,12 +65,12 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpGet("get-by-id/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("get-by-id/{classId}")]
+        public async Task<IActionResult> GetById(int classId)
         {
             try
             {
-                var result = await _classRepository.GetByIdAsync(id);
+                var result = await _classRepository.GetByIdAsync(classId);
                 return Ok(result);
             }
             catch (KeyNotFoundException ex)
@@ -84,7 +84,49 @@ namespace EngLabAPI.Controllers
         }
 
 
-        [HttpPost]
+        [HttpGet("get-student-by-class-id/{classId}")]
+        public async Task<IActionResult> GetStudentByClassId(int classId)
+        {
+            try
+            {
+                var result = await _classRepository.GetStudenInClassAsync(classId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("add-student")]
+        public async Task<IActionResult> AddStudent(int classId, [FromBody] List<int> studentId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var result = await _classRepository.AddStudentAsync(classId, studentId);
+                return Ok(
+                    new
+                    {
+                        message = "Add student success",
+                        id = result
+                    }
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("create-class")]
         public async Task<IActionResult> Create([FromBody] DTOs.Class.CreateClassDTO create)
         {
             if (!ModelState.IsValid)
@@ -108,8 +150,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] DTOs.Class.UpdateClassDTO updateClassDTO)
+        [HttpPatch("{classId}")]
+        public async Task<IActionResult> Update(int classId, [FromBody] DTOs.Class.UpdateClassDTO updateClassDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -117,7 +159,7 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var result = await _classRepository.UpdateAsync(id, updateClassDTO);
+                var result = await _classRepository.UpdateAsync(classId, updateClassDTO);
                 return Ok(
                     new
                     {
@@ -132,8 +174,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{classId}")]
+        public async Task<IActionResult> Delete(int classId)
         {
             if (!ModelState.IsValid)
             {
@@ -141,7 +183,7 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var result = await _classRepository.DeleteAsync(id);
+                var result = await _classRepository.DeleteAsync(classId);
                 return Ok(
                     new
                     {
@@ -155,5 +197,30 @@ namespace EngLabAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("delete-student-in-class/{classId}")]
+        public async Task<IActionResult> DeleteStudent(int classId, [FromBody] List<int> studentId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var result = await _classRepository.RemoveStudentAsync(classId, studentId);
+                return Ok(
+                    new
+                    {
+                        message = "Delete student success",
+                        id = result
+                    }
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

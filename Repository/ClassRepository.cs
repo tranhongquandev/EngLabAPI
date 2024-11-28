@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using EngLabAPI.DTOs.Class;
-
+using EngLabAPI.DTOs.Student;
 using EngLabAPI.Model.Entities;
 
 
@@ -20,6 +20,45 @@ namespace EngLabAPI.Repository
             _connection = connection;
         }
 
+        public async Task<bool> AddStudentAsync(int classId, List<int> studentId)
+        {
+            var query = @"INSERT INTO ClassStudents (ClassId, StudentId)
+                        VALUES (@ClassId, @StudentId)";
+
+            var parameters = studentId.Select(studentId => new
+            {
+                ClassId = classId,
+                StudentId = studentId
+            }).ToList();
+
+            return await _connection.ExecuteAsync(query, parameters) > 0;
+
+        }
+
+        public async Task<bool> RemoveStudentAsync(int classId, List<int> studentId)
+        {
+            var query = @"DELETE FROM ClassStudents WHERE ClassId = @ClassId AND StudentId = @StudentId";
+
+            var parameters = studentId.Select(studentId => new
+            {
+                ClassId = classId,
+                StudentId = studentId
+            }).ToList();
+
+            return await _connection.ExecuteAsync(query, parameters) > 0;
+        }
+
+        public async Task<IEnumerable<GetStudentDTO>> GetStudenInClassAsync(int classId)
+        {
+            var query = @"
+                            SELECT * 
+                            FROM Student s
+                            INNER JOIN ClassStudents cs ON s.Id = cs.StudentId
+                            WHERE cs.ClassId = @ClassId";
+            return await _connection.QueryAsync<GetStudentDTO>(query, new { ClassId = classId });
+
+
+        }
         public async Task<int> CountAllAsync()
         {
             var query = "SELECT COUNT(Id) FROM Class";
@@ -56,7 +95,7 @@ namespace EngLabAPI.Repository
                             FROM Class c
                             INNER JOIN Course co ON c.CourseId = co.Id
                             INNER JOIN Teacher t ON c.TeacherId = t.Id
-                            WHERE c.ClassName IS NULL OR LIKE CONCAT('%', @name, '%')
+                            c.ClassName IS NULL OR c.ClassName LIKE CONCAT('%', @name, '%')
                             ORDER BY c.Id
                             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
                             ";

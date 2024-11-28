@@ -9,8 +9,6 @@ namespace EngLabAPI.Model.Entities
     public class ClassStudent
     {
         public int ClassId { get; set; }
-
-
         public int StudentId { get; set; }
 
     }

@@ -66,12 +66,12 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpGet("get-by-id/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("get-by-id/{courseId}")]
+        public async Task<IActionResult> GetById(int courseId)
         {
             try
             {
-                var result = await _courseRepository.GetByIdAsync(id);
+                var result = await _courseRepository.GetByIdAsync(courseId);
                 return Ok(result);
             }
             catch (KeyNotFoundException ex)
@@ -84,7 +84,7 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("create-course")]
         public async Task<IActionResult> Create([FromBody] DTOs.Course.CreateCourseDTO courseDTO)
         {
             if (!ModelState.IsValid)
@@ -107,8 +107,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] DTOs.Course.UpdateCourseDTO updateCourseDTO)
+        [HttpPatch("{courseId}")]
+        public async Task<IActionResult> Update(int courseId, [FromBody] DTOs.Course.UpdateCourseDTO updateCourseDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -116,7 +116,7 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var result = await _courseRepository.UpdateAsync(id, updateCourseDTO);
+                var result = await _courseRepository.UpdateAsync(courseId, updateCourseDTO);
                 return Ok(
                     new
                     {
@@ -130,8 +130,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{courseId}")]
+        public async Task<IActionResult> Delete(int courseId)
         {
             if (!ModelState.IsValid)
             {
@@ -139,7 +139,7 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var result = await _courseRepository.DeleteAsync(id);
+                var result = await _courseRepository.DeleteAsync(courseId);
                 return Ok(
                     new
                     {

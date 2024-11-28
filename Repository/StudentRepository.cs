@@ -57,7 +57,7 @@ namespace EngLabAPI.Repository
         {
             var query = @"
                 SELECT * FROM Student
-                WHERE FullName IS NULL OR LIKE CONCAT('%', @Name, '%')
+                WHERE FullName IS NULL OR FullName LIKE CONCAT('%', @Name, '%')
                 ORDER BY Id
                 OFFSET @Offset ROWS
                 FETCH NEXT @PageSize ROWS ONLY";

@@ -58,7 +58,7 @@ namespace EngLabAPI.Repository
                             SELECT * 
                             FROM Course c
                             INNER JOIN Level l ON c.LevelId = l.Id
-                            WHERE c.CourseName IS NULL OR LIKE CONCAT('%', @name, '%')
+                            WHERE c.CourseName IS NULL OR c.CourseName LIKE CONCAT('%', @name, '%')
                             ORDER BY c.Id
                             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
                             ";

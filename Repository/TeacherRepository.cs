@@ -58,7 +58,7 @@ namespace EngLabAPI.Repository
         {
             var query = @"
                 SELECT * FROM Teacher
-                WHERE FullName IS NULL OR LIKE @Name
+                WHERE FullName IS NULL OR FullName LIKE @Name
                 ORDER BY Id
                 OFFSET @Offset ROWS
                 FETCH NEXT @PageSize ROWS ONLY";

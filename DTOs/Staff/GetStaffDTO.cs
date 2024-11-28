@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EngLabAPI.DTOs.Teacher
+namespace EngLabAPI.DTOs.Staff
 {
-    public class CreateTeacherDTO
+    public class GetStaffDTO
     {
-        public string? TeacherCode { get; set; }
+        public int Id { get; set; }
+
+        public string? StaffCode { get; set; }
         public string? FullName { get; set; }
 
         public string? Gender { get; set; }
 
         public string? Email { get; set; }
+
+        public string? PasswordHash { get; set; }
 
         public string? PhoneNumber { get; set; }
 
@@ -25,5 +29,13 @@ namespace EngLabAPI.DTOs.Teacher
         public DateTime? EndDate { get; set; }
 
         public bool? IsActive { get; set; }
+
+        public int RoleId { get; set; }
+
+        public string? RoleName { get; set; }
+
+        public int Rank { get; set; }
+
+
     }
 }
