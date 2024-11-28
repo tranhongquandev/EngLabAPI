@@ -1,16 +1,44 @@
 
-using EngLabAPI.Installer;
+using System.Data;
+using Asp.Versioning;
+using EngLabAPI.Configuration;
+using EngLabAPI.Repository;
+using Microsoft.Data.SqlClient;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<IDbConnection>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    return new SqlConnection(connectionString);
+});
 
-var configuration = builder.Configuration;
+
+builder.Services.AddScoped<IStudentRepostory, StudentRepository>();
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
 
 
-// Add services to the container.
-builder.Services.InstallerServiceInAssembly(configuration);
-//
+//Add ApiVersioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("X-Api-Version"));
+})
+.AddMvc()
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 
 
 builder.Services.AddRouting(option =>

@@ -15,8 +15,6 @@ namespace EngLabAPI.Model.Entities
         public string? LevelName { get; set; }
 
         public int LanguageId { get; set; }
-        public Language? Language { get; set; }
 
-        public ICollection<Course>? Course { get; set; }
     }
 }

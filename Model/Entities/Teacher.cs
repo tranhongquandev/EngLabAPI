@@ -12,8 +12,6 @@ namespace EngLabAPI.Model.Entities
 
         public string? TeacherCode { get; set; }
 
-        public string? ImgUrl { get; set; }
-
         public string? FullName { get; set; }
 
         public string? Gender { get; set; }
@@ -32,7 +30,7 @@ namespace EngLabAPI.Model.Entities
 
         public bool? IsActive { get; set; }
 
-        public ICollection<Class>? Class { get; set; }
+
 
 
 

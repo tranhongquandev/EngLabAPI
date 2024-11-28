@@ -12,6 +12,6 @@ namespace EngLabAPI.Model.Entities
 
         public string? MethodName { get; set; }
 
-        public ICollection<Payment>? Payment { get; set; }
+
     }
 }

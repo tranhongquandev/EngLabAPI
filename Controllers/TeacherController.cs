@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using AutoMapper;
+
 using EngLabAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +15,14 @@ namespace EngLabAPI.Controllers
     public class TeacherController : ControllerBase
     {
         private readonly ITeacherRepository _teacherRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public TeacherController(ITeacherRepository teacherRepository, IUnitOfWork unitOfWork, IMapper mapper)
+
+
+        public TeacherController(ITeacherRepository teacherRepository)
         {
             _teacherRepository = teacherRepository;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+
+
         }
 
         [HttpGet("get-by-filter")]
@@ -82,9 +82,9 @@ namespace EngLabAPI.Controllers
             }
         }
 
-       
 
-       
+
+
 
 
         [HttpPost]

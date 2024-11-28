@@ -12,6 +12,6 @@ namespace EngLabAPI.Model.Entities
 
         public string? DayName { get; set; }
 
-        public ICollection<ClassWeekday>? ClassWeekday { get; set; }
+
     }
 }

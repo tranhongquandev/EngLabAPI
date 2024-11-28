@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using AutoMapper;
 using EngLabAPI.Model.Entities;
 using EngLabAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +16,14 @@ namespace EngLabAPI.Controllers
     public class ClassController : ControllerBase
     {
         private readonly IClassRepository _classRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public ClassController(IClassRepository classRepository, IUnitOfWork unitOfWork, IMapper mapper)
+
+
+        public ClassController(IClassRepository classRepository)
         {
             _classRepository = classRepository;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+
+
         }
 
         [HttpGet("get-by-filter")]
@@ -33,7 +32,7 @@ namespace EngLabAPI.Controllers
             try
             {
                 var results = await _classRepository.GetByPageAndFilterAsync(name, page, pageSize);
-                return Ok(_mapper.Map<IEnumerable<DTOs.Class.GetClassDTO>>(results));
+                return Ok(results);
             }
             catch (KeyNotFoundException ex)
             {
@@ -72,7 +71,7 @@ namespace EngLabAPI.Controllers
             try
             {
                 var result = await _classRepository.GetByIdAsync(id);
-                return Ok(_mapper.Map<DTOs.Class.GetClassDTO>(result));
+                return Ok(result);
             }
             catch (KeyNotFoundException ex)
             {
@@ -94,14 +93,12 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Class>(create);
-                _classRepository.Add(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _classRepository.CreateAsync(create);
                 return Ok(
                     new
                     {
                         message = "Create class success",
-
+                        id = result
                     }
                 );
             }
@@ -111,8 +108,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> Update([FromBody] DTOs.Class.UpdateClassDTO updateClassDTO)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] DTOs.Class.UpdateClassDTO updateClassDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -120,14 +117,12 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Class>(updateClassDTO);
-                _classRepository.Update(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _classRepository.UpdateAsync(id, updateClassDTO);
                 return Ok(
                     new
                     {
                         message = "Update class success",
-
+                        id = result
                     }
                 );
             }
@@ -137,8 +132,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] DTOs.Class.DeleteClassDTO deleteClassDTO)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -146,14 +141,12 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Class>(deleteClassDTO);
-                _classRepository.Remove(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _classRepository.DeleteAsync(id);
                 return Ok(
                     new
                     {
                         message = "Delete class success",
-
+                        id = result
                     }
                 );
             }

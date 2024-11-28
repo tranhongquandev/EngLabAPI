@@ -17,13 +17,12 @@ namespace EngLabAPI.Model.Entities
         public string? PaymentStatus { get; set; }
 
         public int? PaymentMethodId { get; set; }
-        public PaymentMethod? PaymentMethod { get; set; }
+
 
         public int StudentId { get; set; }
-        public Student? Student { get; set; }
+
 
         public int CourseId { get; set; }
-        public Course? Course { get; set; }
 
         public double Amount { get; set; }
 

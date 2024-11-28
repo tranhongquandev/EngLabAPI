@@ -37,7 +37,6 @@ namespace EngLabAPI.Model.Entities
 
         public int RoleId { get; set; }
 
-        public StaffRole? StaffRoles { get; set; }
 
     }
 }

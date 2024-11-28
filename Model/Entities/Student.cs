@@ -22,13 +22,10 @@ namespace EngLabAPI.Model.Entities
 
         public DateTime? DateOfBirth { get; set; }
 
-
-
         public DateTime EnrollmentDate { get; set; }
 
         public string? Status { get; set; }
 
-        public ICollection<ClassStudent>? ClassStudent { get; set; }
-        public ICollection<Payment>? Payment { get; set; }
+
     }
 }

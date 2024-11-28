@@ -14,6 +14,6 @@ namespace EngLabAPI.Model.Entities
 
         public int Rank { get; set; }
 
-        public ICollection<Staff>? Staffs { get; set; }
+
     }
 }

@@ -19,13 +19,10 @@ namespace EngLabAPI.Model.Entities
         public DateTime? EndDate { get; set; }
 
         public int CourseId { get; set; }
-        public Course? Course { get; set; }
-
         public int TeacherId { get; set; }
-        public Teacher? Teacher { get; set; }
 
-        public ICollection<ClassStudent>? ClassStudent { get; set; }
-        public ICollection<ClassWeekday>? ClassWeekday { get; set; }
+
+
 
     }
 }

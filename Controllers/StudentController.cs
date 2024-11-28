@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using AutoMapper;
 using EngLabAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+
 
 namespace EngLabAPI.Controllers
 {
@@ -16,14 +15,14 @@ namespace EngLabAPI.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IStudentRepostory _studentRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public StudentController(IStudentRepostory studentRepository, IUnitOfWork unitOfWork, IMapper mapper)
+
+
+        public StudentController(IStudentRepostory studentRepository)
         {
             _studentRepository = studentRepository;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+
+
         }
 
         [HttpGet("get-by-filter")]
@@ -32,7 +31,7 @@ namespace EngLabAPI.Controllers
             try
             {
                 var results = await _studentRepository.GetByPageAndFilterAsync(name, page, pageSize);
-                return Ok(_mapper.Map<IEnumerable<DTOs.Student.GetStudentDTO>>(results));
+                return Ok(results);
             }
             catch (KeyNotFoundException ex)
             {
@@ -43,7 +42,7 @@ namespace EngLabAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-       
+
 
         [HttpGet("count-all")]
         public async Task<IActionResult> CountAll()
@@ -70,7 +69,7 @@ namespace EngLabAPI.Controllers
             try
             {
                 var result = await _studentRepository.GetByIdAsync(id);
-                return Ok(_mapper.Map<DTOs.Student.GetStudentDTO>(result));
+                return Ok(result);
             }
             catch (KeyNotFoundException ex)
             {
@@ -91,16 +90,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Student>(studentDTO);
-                _studentRepository.Add(entity);
-                await _unitOfWork.SaveChangeAsync();
-                return Ok(
-                    new
-                    {
-                        message = "Create student success",
-
-                    }
-                );
+                var result = await _studentRepository.CreateAsync(studentDTO);
+                return Ok(new
+                {
+                    message = "Create student success",
+                });
             }
             catch (Exception ex)
             {
@@ -108,8 +102,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> Update([FromBody] DTOs.Student.UpdateStudentDTO studentDTO)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] DTOs.Student.UpdateStudentDTO studentDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -117,14 +111,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Student>(studentDTO);
-                _studentRepository.Update(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _studentRepository.UpdateAsync(id, studentDTO);
                 return Ok(
                     new
                     {
                         message = "Update student success",
-
                     }
                 );
             }
@@ -135,7 +126,7 @@ namespace EngLabAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] DTOs.Student.DeleteStudentDTO studentDTO)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -143,14 +134,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Student>(studentDTO);
-                _studentRepository.Remove(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _studentRepository.DeleteAsync(id);
                 return Ok(
                     new
                     {
                         message = "Delete student success",
-
                     }
                 );
             }

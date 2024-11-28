@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using AutoMapper;
+
 using EngLabAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,14 +18,14 @@ namespace EngLabAPI.Controllers
     {
 
         private readonly ICourseRepository _courseRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public CourseController(ICourseRepository courseRepository, IUnitOfWork unitOfWork, IMapper mapper)
+
+
+        public CourseController(ICourseRepository courseRepository)
         {
             _courseRepository = courseRepository;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+
+
         }
 
         [HttpGet("get-by-filter")]
@@ -34,7 +34,7 @@ namespace EngLabAPI.Controllers
             try
             {
                 var results = await _courseRepository.GetByPageAndFilterAsync(name, page, pageSize);
-                return Ok(_mapper.Map<IEnumerable<DTOs.Course.GetCourseDTO>>(results));
+                return Ok(results);
             }
             catch (KeyNotFoundException ex)
             {
@@ -72,7 +72,7 @@ namespace EngLabAPI.Controllers
             try
             {
                 var result = await _courseRepository.GetByIdAsync(id);
-                return Ok(_mapper.Map<DTOs.Course.GetCourseDTO>(result));
+                return Ok(result);
             }
             catch (KeyNotFoundException ex)
             {
@@ -93,14 +93,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Course>(courseDTO);
-                _courseRepository.Add(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _courseRepository.CreateAsync(courseDTO);
                 return Ok(
                     new
                     {
                         message = "Create course success",
-
                     }
                 );
             }
@@ -110,8 +107,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> Update([FromBody] DTOs.Course.UpdateCourseDTO updateCourseDTO)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] DTOs.Course.UpdateCourseDTO updateCourseDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -119,14 +116,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Course>(updateCourseDTO);
-                _courseRepository.Update(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _courseRepository.UpdateAsync(id, updateCourseDTO);
                 return Ok(
                     new
                     {
                         message = "Update course success",
-
                     }
                 );
             }
@@ -136,8 +130,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] DTOs.Course.DeleteCourseDTO deleteCourseDTO)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -145,14 +139,11 @@ namespace EngLabAPI.Controllers
             }
             try
             {
-                var entity = _mapper.Map<Model.Entities.Course>(deleteCourseDTO);
-                _courseRepository.Remove(entity);
-                await _unitOfWork.SaveChangeAsync();
+                var result = await _courseRepository.DeleteAsync(id);
                 return Ok(
                     new
                     {
                         message = "Delete course success",
-
                     }
                 );
             }

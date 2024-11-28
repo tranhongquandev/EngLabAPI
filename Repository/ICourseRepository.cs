@@ -7,8 +7,17 @@ using EngLabAPI.Model.Entities;
 
 namespace EngLabAPI.Repository
 {
-    public interface ICourseRepository : IGenericRepository<Course>
+    public interface ICourseRepository
     {
-        public new Task<List<GetCourseDTO>> GetByPageAndFilterAsync(string? name, int page, int pageSize);
+        public Task<IEnumerable<GetCourseDTO>> GetByPageAndFilterAsync(string? name, int page, int pageSize);
+        public Task<int> CountAllAsync();
+
+        public Task<GetCourseDTO> GetByIdAsync(int id);
+
+        public Task<bool> CreateAsync(CreateCourseDTO courseDTO);
+
+        public Task<bool> UpdateAsync(int id, UpdateCourseDTO courseDTO);
+
+        public Task<bool> DeleteAsync(int id);
     }
 }

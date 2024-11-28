@@ -1,69 +1,96 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using EngLabAPI.DTOs.Class;
-using EngLabAPI.Model.Context;
+
 using EngLabAPI.Model.Entities;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace EngLabAPI.Repository
 {
-    public class ClassRepository : GenericRepository<Class>, IClassRepository
+    public class ClassRepository : IClassRepository
     {
-        public ClassRepository(EngLabContext context) : base(context)
+        private readonly IDbConnection _connection;
+
+        public ClassRepository(IDbConnection connection)
         {
+            _connection = connection;
         }
 
-        public new async Task<List<GetClassDTO>> GetByPageAndFilterAsync(string? name, int page, int pageSize)
+        public async Task<int> CountAllAsync()
         {
-            // Base query with joins
-            var query = _context.Class
-                .Join(
-                    _context.Teacher,
-                    cls => cls.TeacherId,
-                    teacher => teacher.Id,
-                    (cls, teacher) => new { Class = cls, Teacher = teacher }
-                )
-                .Join(
-                    _context.Course,
-                    clsTeacher => clsTeacher.Class.CourseId,
-                    course => course.Id,
-                    (clsTeacher, course) => new { clsTeacher.Class, clsTeacher.Teacher, Course = course }
-                );
+            var query = "SELECT COUNT(Id) FROM Class";
+            return await _connection.QueryFirstOrDefaultAsync<int>(query);
+        }
 
-            // Apply filtering by name if provided
-            if (!string.IsNullOrEmpty(name))
+        public async Task<bool> CreateAsync(CreateClassDTO classDTO)
+        {
+            var query = @"INSERT INTO Class (ClassCode, ClassName, StartDate, EndDate, CourseId, TeacherId)
+                        VALUES (@ClassCode, @ClassName, @StartDate, @EndDate, @CourseId, @TeacherId)";
+            return await _connection.ExecuteAsync(query, classDTO) > 0;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var query = @"DELETE FROM Class WHERE Id = @Id";
+            return await _connection.ExecuteAsync(query, new { Id = id }) > 0;
+        }
+
+        public async Task<GetClassDTO> GetByIdAsync(int id)
+        {
+            var query = @"SELECT * 
+            FROM Class c
+            INNER JOIN Course co ON c.CourseId = co.Id
+            INNER JOIN Teacher t ON c.TeacherId = t.Id
+            WHERE Id = @Id";
+            return await _connection.QueryFirstOrDefaultAsync<GetClassDTO>(query, new { Id = id }) ?? throw new KeyNotFoundException("Không tìm thấy lớp học");
+        }
+
+        public async Task<IEnumerable<GetClassDTO>> GetByPageAndFilterAsync(string? name, int page, int pageSize)
+        {
+            var query = @"
+                            SELECT * 
+                            FROM Class c
+                            INNER JOIN Course co ON c.CourseId = co.Id
+                            INNER JOIN Teacher t ON c.TeacherId = t.Id
+                            WHERE c.ClassName IS NULL OR LIKE CONCAT('%', @name, '%')
+                            ORDER BY c.Id
+                            OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+                            ";
+
+            return await _connection.QueryAsync<GetClassDTO>(query, new { name, Offset = (page - 1) * pageSize, PageSize = pageSize });
+        }
+
+        public async Task<bool> UpdateAsync(int id, UpdateClassDTO classDTO)
+        {
+            var query = @"UPDATE Class
+                        SET 
+                            ClassCode = COALESCE(@ClassCode, ClassCode),
+                            ClassName = COALESCE(@ClassName, ClassName),
+                            StartDate = COALESCE(@StartDate, StartDate),
+                            EndDate = COALESCE(@EndDate, EndDate),
+                            CourseId = COALESCE(@CourseId, CourseId),
+                            TeacherId = COALESCE(@TeacherId, TeacherId)
+                        WHERE Id = @Id";
+
+            var parameters = new DynamicParameters(new
             {
-                query = query.Where(x =>
-                    x.Class.ClassName!.Contains(name) ||
-                    x.Course.CourseName!.Contains(name) ||
-                    x.Teacher.FullName!.Contains(name));
-            }
+                Id = id,
+                classDTO.ClassCode,
+                classDTO.ClassName,
+                classDTO.StartDate,
+                classDTO.EndDate,
+                classDTO.CourseId,
+                classDTO.TeacherId
+            });
 
-            // Apply pagination
-            var paginatedQuery = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+            return await _connection.ExecuteAsync(query, parameters) > 0;
 
-            // Project to DTO
-            var result = paginatedQuery
-                .Select(x => new GetClassDTO
-                {
-                    Id = x.Class.Id,
-                    ClassCode = x.Class.ClassCode,
-                    ClassName = x.Class.ClassName,
-                    CourseName = x.Course.CourseName,
-                    TeacherName = x.Teacher.FullName,
-                    StartDate = x.Class.StartDate,
-                    EndDate = x.Class.EndDate,
-                    CourseId = x.Course.Id,
-                    TeacherId = x.Teacher.Id
-                });
 
-            return await result.ToListAsync();
         }
-
     }
 }
 
