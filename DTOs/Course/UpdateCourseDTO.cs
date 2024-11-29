@@ -19,7 +19,6 @@ namespace EngLabAPI.DTOs.Course
 
         public double Discount { get; set; }
 
-        public DateTime UpdatedDate { get; set; }
         public bool IsActive { get; set; }
         public int LevelId { get; set; }
     }

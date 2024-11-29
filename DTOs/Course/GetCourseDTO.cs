@@ -31,6 +31,12 @@ namespace EngLabAPI.DTOs.Course
 
         public int LevelId { get; set; }
 
+        public string LevelCode { get; set; }
+
         public string? LevelName { get; set; }
+
+        public int LanguageId { get; set; }
+
+        public string? LanguageName { get; set; }
     }
 }

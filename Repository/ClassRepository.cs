@@ -84,7 +84,7 @@ namespace EngLabAPI.Repository
             FROM Class c
             INNER JOIN Course co ON c.CourseId = co.Id
             INNER JOIN Teacher t ON c.TeacherId = t.Id
-            WHERE Id = @Id";
+            WHERE c.Id = @Id";
             return await _connection.QueryFirstOrDefaultAsync<GetClassDTO>(query, new { Id = id }) ?? throw new KeyNotFoundException("Không tìm thấy lớp học");
         }
 
@@ -95,7 +95,7 @@ namespace EngLabAPI.Repository
                             FROM Class c
                             INNER JOIN Course co ON c.CourseId = co.Id
                             INNER JOIN Teacher t ON c.TeacherId = t.Id
-                            c.ClassName IS NULL OR c.ClassName LIKE CONCAT('%', @name, '%')
+                            WHERE c.ClassName IS NULL OR c.ClassName LIKE CONCAT('%', @name, '%')
                             ORDER BY c.Id
                             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
                             ";

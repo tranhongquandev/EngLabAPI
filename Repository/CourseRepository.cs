@@ -29,8 +29,8 @@ namespace EngLabAPI.Repository
 
         public async Task<bool> CreateAsync(CreateCourseDTO courseDTO)
         {
-            var query = @"INSERT INTO Course (CourseCode, CourseName, Description, Duration, Fee, Discount, IsActive, CreatedDate, UpdatedDate, LevelId)
-                        VALUES (@CourseCode, @CourseName, @Description, @Duration, @Fee, @Discount, @IsActive, @CreatedDate, @UpdatedDate, @LevelId)";
+            var query = @"INSERT INTO Course (CourseCode, CourseName, Description, Duration, Fee, Discount, IsActive, LevelId)
+                        VALUES (@CourseCode, @CourseName, @Description, @Duration, @Fee, @Discount, @IsActive, @LevelId)";
 
             return await _connection.ExecuteAsync(query, courseDTO) > 0;
         }
@@ -47,7 +47,8 @@ namespace EngLabAPI.Repository
             var query = @"SELECT *
             FROM Course c
             INNER JOIN Level l ON c.LevelId = l.Id
-            WHERE Id = @Id";
+            INNER JOIN Language la ON l.LanguageId = la.Id
+            WHERE c.Id = @Id";
 
             return await _connection.QueryFirstOrDefaultAsync<GetCourseDTO>(query, new { Id = id }) ?? throw new KeyNotFoundException("Không tìm thấy khóa học");
         }
@@ -58,6 +59,7 @@ namespace EngLabAPI.Repository
                             SELECT * 
                             FROM Course c
                             INNER JOIN Level l ON c.LevelId = l.Id
+                            INNER JOIN Language la ON l.LanguageId = la.Id
                             WHERE c.CourseName IS NULL OR c.CourseName LIKE CONCAT('%', @name, '%')
                             ORDER BY c.Id
                             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
@@ -75,7 +77,6 @@ namespace EngLabAPI.Repository
                             Fee = COALESCE(@Fee, Fee),
                             Discount = COALESCE(@Discount, Discount),
                             IsActive = COALESCE(@IsActive, IsActive),
-                            UpdatedDate = COALESCE(@UpdatedDate, UpdatedDate),
                             LevelId = COALESCE(@LevelId, LevelId)
                         WHERE Id = @Id";
 
@@ -88,7 +89,6 @@ namespace EngLabAPI.Repository
                 courseDTO.Fee,
                 courseDTO.Discount,
                 courseDTO.IsActive,
-                courseDTO.UpdatedDate,
                 courseDTO.LevelId,
                 Id = id
             });

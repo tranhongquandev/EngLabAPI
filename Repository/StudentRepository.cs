@@ -29,8 +29,8 @@ namespace EngLabAPI.Repository
         public async Task<bool> CreateAsync(CreateStudentDTO studentDTO)
         {
             var query = @"
-                INSERT INTO Student (StudentCode, FullName, Gender, Email, PhoneNumber, DateOfBirth, EnrollmentDate, Status)
-                VALUES (@StudentCode, @FullName, @Gender, @Email, @PhoneNumber, @DateOfBirth, @EnrollmentDate, @Status)";
+                INSERT INTO Student (StudentCode, FullName, Gender, Email, PhoneNumber, DateOfBirth,  Status)
+                VALUES (@StudentCode, @FullName, @Gender, @Email, @PhoneNumber, @DateOfBirth, @Status)";
 
             return await _connection.ExecuteAsync(query, studentDTO) > 0;
         }
@@ -76,7 +76,6 @@ namespace EngLabAPI.Repository
                     Email = COALESCE(@Email, Email),
                     PhoneNumber = COALESCE(@PhoneNumber, PhoneNumber),
                     DateOfBirth = COALESCE(@DateOfBirth, DateOfBirth),
-                    EnrollmentDate = COALESCE(@EnrollmentDate, EnrollmentDate),
                     Status = COALESCE(@Status, Status)
                 WHERE Id = @Id;";
 
@@ -89,7 +88,6 @@ namespace EngLabAPI.Repository
                 studentDTO.Email,
                 studentDTO.PhoneNumber,
                 studentDTO.DateOfBirth,
-                studentDTO.EnrollmentDate,
                 studentDTO.Status
             });
 

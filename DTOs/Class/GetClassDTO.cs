@@ -23,7 +23,7 @@ namespace EngLabAPI.DTOs.Class
 
         public int TeacherId { get; set; }
 
-          public string? TeacherName { get; set; }
+        public string? FullName { get; set; }
 
     }
 }
