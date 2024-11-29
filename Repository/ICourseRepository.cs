@@ -19,5 +19,13 @@ namespace EngLabAPI.Repository
         public Task<bool> UpdateAsync(int id, UpdateCourseDTO courseDTO);
 
         public Task<bool> DeleteAsync(int id);
+
+        public Task<IEnumerable<Language>> GetAllLanguagesAsync();
+
+        public Task<IEnumerable<Level>> GetAllLevelsAsync();
+
+        public Task<IEnumerable<Level>> GetLevelByLanguageIdAsync(int languageId);
+
+
     }
 }

@@ -152,5 +152,61 @@ namespace EngLabAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("get-all-language")]
+        public async Task<IActionResult> GetAllLanguage()
+        {
+            try
+            {
+                var results = await _courseRepository.GetAllLanguagesAsync();
+                return Ok(results);
+            }
+            catch (KeyNotFoundException ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-all-level")]
+        public async Task<IActionResult> GetAllLevel()
+        {
+            try
+            {
+                var results = await _courseRepository.GetAllLevelsAsync();
+                return Ok(results);
+            }
+            catch (KeyNotFoundException ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-level-by-language-id/{languageId}")]
+        public async Task<IActionResult> GetLevelByLanguageId(int languageId)
+        {
+            try
+            {
+                var result = await _courseRepository.GetLevelByLanguageIdAsync(languageId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -42,6 +42,18 @@ namespace EngLabAPI.Repository
             return await _connection.ExecuteAsync(query, new { Id = id }) > 0;
         }
 
+        public async Task<IEnumerable<Language>> GetAllLanguagesAsync()
+        {
+            var query = "SELECT * FROM Language";
+            return await _connection.QueryAsync<Language>(query);
+        }
+
+        public Task<IEnumerable<Level>> GetAllLevelsAsync()
+        {
+            var query = @"SELECT * FROM Level";
+            return _connection.QueryAsync<Level>(query);
+        }
+
         public async Task<GetCourseDTO> GetByIdAsync(int id)
         {
             var query = @"SELECT *
@@ -65,6 +77,12 @@ namespace EngLabAPI.Repository
                             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
                             ";
             return await _connection.QueryAsync<GetCourseDTO>(query, new { name, Offset = (page - 1) * pageSize, PageSize = pageSize });
+        }
+
+        public async Task<IEnumerable<Level>> GetLevelByLanguageIdAsync(int languageId)
+        {
+            var query = @"SELECT * FROM Level WHERE LanguageId = @LanguageId";
+            return await _connection.QueryAsync<Level>(query, new { LanguageId = languageId }) ?? throw new KeyNotFoundException("Không tìm thấy level");
         }
 
         public async Task<bool> UpdateAsync(int id, UpdateCourseDTO courseDTO)
