@@ -19,5 +19,7 @@ namespace EngLabAPI.Repository
         public Task<bool> UpdateAsync(int id, UpdateStaffDTO staffDTO);
 
         public Task<bool> DeleteAsync(int id);
+
+        public Task<IEnumerable<StaffRole>> GetAllRolesAsync();
     }
 }

@@ -56,7 +56,8 @@ namespace EngLabAPI.Repository
 
         public async Task<GetCourseDTO> GetByIdAsync(int id)
         {
-            var query = @"SELECT *
+            var query = @"
+            SELECT c.Id, c.CourseCode, c.CourseName, c.Description, c.Duration, c.Fee, c.Discount, c.CreatedDate, c.UpdatedDate, c.IsActive, c.LevelId, l.LevelCode, l.LevelName, la.LanguageName, l.LanguageId
             FROM Course c
             INNER JOIN Level l ON c.LevelId = l.Id
             INNER JOIN Language la ON l.LanguageId = la.Id
@@ -68,7 +69,7 @@ namespace EngLabAPI.Repository
         public async Task<IEnumerable<GetCourseDTO>> GetByPageAndFilterAsync(string? name, int page, int pageSize)
         {
             var query = @"
-                            SELECT * 
+                            SELECT c.Id, c.CourseCode, c.CourseName, c.Description, c.Duration, c.Fee, c.Discount, c.CreatedDate, c.UpdatedDate, c.IsActive, c.LevelId, l.LevelCode, l.LevelName, la.LanguageName, l.LanguageId
                             FROM Course c
                             INNER JOIN Level l ON c.LevelId = l.Id
                             INNER JOIN Language la ON l.LanguageId = la.Id

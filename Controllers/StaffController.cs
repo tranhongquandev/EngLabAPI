@@ -26,6 +26,25 @@ namespace EngLabAPI.Controllers
 
         }
 
+        [HttpGet("get-all-staff-role")]
+        public async Task<IActionResult> GetAllStaffRole()
+        {
+            try
+            {
+                var results = await _staffRepository.GetAllRolesAsync();
+                return Ok(results);
+            }
+            catch (KeyNotFoundException ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("get-by-filter")]
         public async Task<IActionResult> GetAll(string? name, int page = 1, int pageSize = 10)
         {

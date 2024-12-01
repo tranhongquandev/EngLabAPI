@@ -89,5 +89,13 @@ namespace EngLabAPI.Repository
 
             return await _connection.ExecuteAsync(query, parameters) > 0;
         }
+
+        public async Task<IEnumerable<StaffRole>> GetAllRolesAsync()
+        {
+            var query = @"SELECT * FROM StaffRole";
+
+            return await _connection.QueryAsync<StaffRole>(query);
+        }
+
     }
 }
