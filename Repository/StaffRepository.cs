@@ -46,7 +46,9 @@ namespace EngLabAPI.Repository
 
         public async Task<GetStaffDTO> GetByIdAsync(int id)
         {
-            var query = @"SELECT * 
+            var query = @"SELECT 
+                            s.Id, s.StaffCode , s.FullName, s.Gender, s.Email, s.PhoneNumber, s.Address, s.DateOfBirth, s.HireDate,
+                            s.EndDate, s.IsActive, s.RoleId, sr.RoleName, sr.Rank
                         FROM Staff s
                         INNER JOIN StaffRole sr ON s.RoleId = sr.Id
                         WHERE s.Id = @Id";
