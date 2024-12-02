@@ -47,7 +47,7 @@ namespace EngLabAPI.Controllers
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("Email", user.Email.ToString());
 
-            return Ok(new { Message = "Logged in successfully", userId = user.Id });
+            return Ok(new {  userId = user.Id });
         }
 
         [HttpPost("logout")]
