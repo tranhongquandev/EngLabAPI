@@ -80,7 +80,7 @@ namespace EngLabAPI.Repository
 
         public async Task<GetClassDTO> GetByIdAsync(int id)
         {
-            var query = @"SELECT c.Id, c.ClassCode, c.ClassName, c.StartDate, c.EndDate, co.CourseName, t.TeacherName
+            var query = @"SELECT c.Id, c.ClassCode, c.ClassName, c.StartDate, c.EndDate, co.CourseName, t.FullName
             FROM Class c
             INNER JOIN Course co ON c.CourseId = co.Id
             INNER JOIN Teacher t ON c.TeacherId = t.Id
