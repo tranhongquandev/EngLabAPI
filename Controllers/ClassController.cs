@@ -216,8 +216,8 @@ namespace EngLabAPI.Controllers
             }
         }
 
-        [HttpDelete("delete-student-in-class/{classId}")]
-        public async Task<IActionResult> DeleteStudent(int classId, [FromBody] List<int> studentId)
+        [HttpDelete("remove-student-in-class")]
+        public async Task<IActionResult> DeleteStudent([FromQuery] int classId, [FromQuery] int studentId)
         {
             if (!ModelState.IsValid)
             {

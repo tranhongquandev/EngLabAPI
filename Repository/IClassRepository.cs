@@ -15,7 +15,7 @@ namespace EngLabAPI.Repository
 
         public Task<bool> AddStudentAsync(int classId, List<int> studentId);
 
-        public Task<bool> RemoveStudentAsync(int classId, List<int> studentId);
+        public Task<bool> RemoveStudentAsync(int classId, int studentId);
 
         public Task<IEnumerable<GetStudentDTO>> GetStudenInClassAsync(int classId);
 

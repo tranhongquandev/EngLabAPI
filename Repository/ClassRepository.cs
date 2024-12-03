@@ -35,15 +35,15 @@ namespace EngLabAPI.Repository
 
         }
 
-        public async Task<bool> RemoveStudentAsync(int classId, List<int> studentId)
+        public async Task<bool> RemoveStudentAsync(int classId, int studentId)
         {
             var query = @"DELETE FROM ClassStudents WHERE ClassId = @ClassId AND StudentId = @StudentId";
 
-            var parameters = studentId.Select(studentId => new
+            var parameters = new
             {
                 ClassId = classId,
                 StudentId = studentId
-            }).ToList();
+            };
 
             return await _connection.ExecuteAsync(query, parameters) > 0;
         }
