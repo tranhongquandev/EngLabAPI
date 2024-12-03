@@ -102,6 +102,24 @@ namespace EngLabAPI.Controllers
             }
         }
 
+        [HttpGet("get-student-not-in-class/{classId}")]
+        public async Task<IActionResult> GetStudentNotInClass(int classId)
+        {
+            try
+            {
+                var result = await _classRepository.GetStudentNotInClassAsync(classId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("add-student")]
         public async Task<IActionResult> AddStudent(int classId, [FromBody] List<int> studentId)
         {

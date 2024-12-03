@@ -19,6 +19,8 @@ namespace EngLabAPI.Repository
 
         public Task<IEnumerable<GetStudentDTO>> GetStudenInClassAsync(int classId);
 
+        public Task<IEnumerable<GetStudentDTO>> GetStudentNotInClassAsync(int classId);
+
         public Task<GetClassDTO> GetByIdAsync(int id);
 
         public Task<bool> CreateAsync(CreateClassDTO classDTO);

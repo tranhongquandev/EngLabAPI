@@ -130,6 +130,15 @@ namespace EngLabAPI.Repository
 
 
         }
+
+        public Task<IEnumerable<GetStudentDTO>> GetStudentNotInClassAsync(int classId)
+        {
+            var query = @"
+                            SELECT * 
+                            FROM Student s
+                            WHERE s.Id NOT IN (SELECT StudentId FROM ClassStudents WHERE ClassId = @ClassId)";
+            return _connection.QueryAsync<GetStudentDTO>(query, new { ClassId = classId });
+        }
     }
 }
 
