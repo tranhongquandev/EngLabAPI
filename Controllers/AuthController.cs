@@ -41,13 +41,13 @@ namespace EngLabAPI.Controllers
 
             if (!BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.PasswordHash))
             {
-                return Unauthorized(new { Message = "Invalid email or password" });
+                return Unauthorized(new { Message = "Invalid email or password"  });
             }
 
             HttpContext.Session.SetString("UserId", user.Id.ToString());
-            HttpContext.Session.SetString("Email", user.Id.ToString());
+            HttpContext.Session.SetString("Email", user.Email.ToString());
 
-            return Ok(new { Message = "Logged in successfully" });
+            return Ok(new {  userId = user.Id });
         }
 
         [HttpPost("logout")]
