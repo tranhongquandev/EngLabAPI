@@ -27,11 +27,11 @@ namespace EngLabAPI.Controllers
         }
 
         [HttpGet("get-all-staff-role")]
-        public async Task<IActionResult> GetAllStaffRole()
+        public async Task<IActionResult> GetAllStaffRole(int? userId)
         {
             try
             {
-                var results = await _staffRepository.GetAllRolesAsync();
+                var results = await _staffRepository.GetAllRolesAsync(userId);
                 return Ok(results);
             }
             catch (KeyNotFoundException ex)
@@ -46,11 +46,11 @@ namespace EngLabAPI.Controllers
         }
 
         [HttpGet("get-by-filter")]
-        public async Task<IActionResult> GetAll(string? name, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAll(string? name, int? page, int? pageSize, int? userId)
         {
             try
             {
-                var results = await _staffRepository.GetByPageAndFilterAsync(name, page, pageSize);
+                var results = await _staffRepository.GetByPageAndFilterAsync(name, page, pageSize, userId);
                 return Ok(results);
             }
             catch (KeyNotFoundException ex)
@@ -65,24 +65,7 @@ namespace EngLabAPI.Controllers
         }
 
 
-        [HttpGet("count-all")]
-        public async Task<IActionResult> CountAll()
-        {
-            try
-            {
-                var results = await _staffRepository.CountAllAsync();
-                return Ok(results);
-            }
-            catch (KeyNotFoundException ex)
-            {
 
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
         [HttpGet("get-by-id/{staffId}")]
         public async Task<IActionResult> GetById(int staffId)

@@ -56,17 +56,59 @@ namespace EngLabAPI.Repository
             return await _connection.QueryFirstOrDefaultAsync<GetStaffDTO>(query, new { Id = id }) ?? throw new Exception("Staff not found");
         }
 
-        public Task<IEnumerable<GetStaffDTO>> GetByPageAndFilterAsync(string? name, int page, int pageSize)
+        public Task<IEnumerable<GetStaffDTO>> GetByPageAndFilterAsync(string? name, int? page, int? pageSize, int? userId)
         {
-            var query = @"SELECT * 
+
+            var queryUserRoleRank = @"SELECT sr.Rank FROM StaffRole sr INNER JOIN Staff s ON s.RoleId = sr.Id WHERE s.Id = @UserId";
+
+            var roleRank = _connection.QueryFirstOrDefault<int>(queryUserRoleRank, new { UserId = userId });
+
+            var query = "";
+
+            if (roleRank == 1)
+            {
+                query = @"SELECT * 
                         FROM Staff s
                         INNER JOIN StaffRole sr ON s.RoleId = sr.Id
-                        WHERE s.Name IS NULL OR s.Name LIKE @Name
-                        ORDER BY s.Name
-                        OFFSET @Offset ROWS
-                        FETCH NEXT @PageSize ROWS ONLY";
+                        WHERE s.FullName IS NULL OR s.FullName LIKE @Name
+                        ORDER BY s.FullName
+                       ";
 
-            return _connection.QueryAsync<GetStaffDTO>(query, new { Name = $"%{name}%", Offset = (page - 1) * pageSize, PageSize = pageSize });
+                var parameters = new DynamicParameters();
+
+                if (page != null && pageSize != null)
+                {
+                    parameters.Add("Offset", (page - 1) * pageSize);
+                    parameters.Add("PageSize", pageSize);
+                    query += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+                }
+
+                return _connection.QueryAsync<GetStaffDTO>(query, parameters);
+            }
+
+            else
+            {
+                query = @"SELECT * 
+                        FROM Staff s
+                        INNER JOIN StaffRole sr ON s.RoleId = sr.Id
+                        WHERE (s.FullName IS NULL OR s.FullName LIKE @Name) AND sr.Rank > @RoleRank
+                        ORDER BY s.FullName
+                       ";
+
+                var parameters = new DynamicParameters();
+
+                if (page != null && pageSize != null)
+                {
+                    parameters.Add("Offset", (page - 1) * pageSize);
+                    parameters.Add("PageSize", pageSize);
+                    query += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+                }
+
+                parameters.Add("RoleRank", roleRank);
+
+                return _connection.QueryAsync<GetStaffDTO>(query, parameters);
+            }
+
         }
 
         public async Task<bool> UpdateAsync(int id, UpdateStaffDTO staffDTO)
@@ -92,10 +134,23 @@ namespace EngLabAPI.Repository
             return await _connection.ExecuteAsync(query, parameters) > 0;
         }
 
-        public async Task<IEnumerable<StaffRole>> GetAllRolesAsync()
+        public async Task<IEnumerable<StaffRole>> GetAllRolesAsync(int? userId)
         {
-            var query = @"SELECT * FROM StaffRole";
 
+            var queryUserRoleRank = @"SELECT sr.Rank FROM StaffRole sr INNER JOIN Staff s ON s.RoleId = sr.Id WHERE s.Id = @UserId";
+
+            var roleRank = await _connection.QueryFirstOrDefaultAsync<int>(queryUserRoleRank, new { UserId = userId });
+
+            var query = "";
+
+            if (roleRank == 1)
+            {
+                query = @"SELECT * FROM StaffRole";
+            }
+            else
+            {
+                query = @"SELECT * FROM StaffRole WHERE Rank > @RoleRank";
+            }
             return await _connection.QueryAsync<StaffRole>(query);
         }
 
