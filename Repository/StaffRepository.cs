@@ -62,40 +62,23 @@ namespace EngLabAPI.Repository
             if (roleRank == 1)
             {
                 query = @"
-                    SELECT * 
-                    FROM Staff s
-                    INNER JOIN StaffRole sr ON s.RoleId = sr.Id
-                    WHERE 1=1
-                    
-                ";
-
-                if (page != null && pageSize != null)
-                {
-                    parameters.Add("Offset", (page - 1) * pageSize);
-                    parameters.Add("PageSize", pageSize);
-                    query += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-                }
+            SELECT * 
+            FROM Staff s
+            INNER JOIN StaffRole sr ON s.RoleId = sr.Id
+            WHERE 1=1
+        ";
             }
             else
             {
                 query = @"
-                    SELECT * 
-                    FROM Staff s
-                    INNER JOIN StaffRole sr ON s.RoleId = sr.Id
-                    WHERE  sr.Rank > @RoleRank
-                    
-                ";
+            SELECT * 
+            FROM Staff s
+            INNER JOIN StaffRole sr ON s.RoleId = sr.Id
+            WHERE sr.Rank > @RoleRank
+        ";
 
                 parameters.Add("RoleRank", roleRank);
-
-                if (page != null && pageSize != null)
-                {
-                    parameters.Add("Offset", (page - 1) * pageSize);
-                    parameters.Add("PageSize", pageSize);
-                    query += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-                }
             }
-
 
             if (!string.IsNullOrEmpty(name))
             {
@@ -103,12 +86,18 @@ namespace EngLabAPI.Repository
                 query += " AND (@Name IS NULL OR s.FullName LIKE @Name)";
             }
 
-
+            if (page != null && pageSize != null)
+            {
+                parameters.Add("Offset", (page - 1) * pageSize);
+                parameters.Add("PageSize", pageSize);
+                query += @"
+            ORDER BY s.FullName -- You should choose an appropriate column to order by
+            OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+        ";
+            }
 
             return await _connection.QueryAsync<GetStaffDTO>(query, parameters);
         }
-
-
 
 
         public async Task<bool> UpdateAsync(int id, UpdateStaffDTO staffDTO)
