@@ -64,9 +64,6 @@ namespace EngLabAPI.Controllers
             }
         }
 
-
-
-
         [HttpGet("get-by-id/{staffId}")]
         public async Task<IActionResult> GetById(int staffId)
         {
