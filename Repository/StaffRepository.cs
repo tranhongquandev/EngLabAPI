@@ -18,12 +18,6 @@ namespace EngLabAPI.Repository
             _connection = connection;
         }
 
-        public async Task<int> CountAllAsync()
-        {
-            var query = @"SELECT COUNT(Id) FROM Staff";
-
-            return await _connection.QueryFirstOrDefaultAsync<int>(query);
-        }
 
         public async Task<bool> CreateAsync(CreateStaffDTO staffDTO)
         {
@@ -83,6 +77,8 @@ namespace EngLabAPI.Repository
                     query += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 }
 
+                parameters.Add("Name", name);
+
                 return _connection.QueryAsync<GetStaffDTO>(query, parameters);
             }
 
@@ -103,6 +99,8 @@ namespace EngLabAPI.Repository
                     parameters.Add("PageSize", pageSize);
                     query += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 }
+
+                parameters.Add("Name", name);
 
                 parameters.Add("RoleRank", roleRank);
 
