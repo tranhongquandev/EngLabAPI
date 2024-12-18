@@ -9,7 +9,7 @@ namespace EngLabAPI.Repository
 {
     public interface IStaffRepository
     {
-        public Task<IEnumerable<GetStaffDTO>> GetByPageAndFilterAsync(string? name, int? page, int? pageSize, int? userId);
+        public Task<IEnumerable<GetStaffDTO>> GetByPageAndFilterAsync(string? name, int? page, int? pageSize, int userId);
         public Task<GetStaffDTO> GetByIdAsync(int id);
 
         public Task<bool> CreateAsync(CreateStaffDTO staffDTO);
@@ -18,6 +18,6 @@ namespace EngLabAPI.Repository
 
         public Task<bool> DeleteAsync(int id);
 
-        public Task<IEnumerable<StaffRole>> GetAllRolesAsync(int? userId);
+        public Task<IEnumerable<StaffRole>> GetAllRolesAsync(int userId);
     }
 }

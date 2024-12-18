@@ -50,10 +50,15 @@ namespace EngLabAPI.Repository
             return await _connection.QueryFirstOrDefaultAsync<GetStaffDTO>(query, new { Id = id }) ?? throw new Exception("Staff not found");
         }
 
-        public async Task<IEnumerable<GetStaffDTO>> GetByPageAndFilterAsync(string? name, int? page, int? pageSize, int? userId)
+        public async Task<IEnumerable<GetStaffDTO>> GetByPageAndFilterAsync(string? name, int? page, int? pageSize, int userId)
         {
             var queryUserRoleRank = @"SELECT sr.Rank FROM StaffRole sr INNER JOIN Staff s ON s.RoleId = sr.Id WHERE s.Id = @UserId";
             var roleRank = _connection.ExecuteScalar<int>(queryUserRoleRank, new { UserId = userId });
+
+            if (roleRank == 0)
+            {
+                throw new Exception("User not found");
+            }
 
             var query = "";
             var parameters = new DynamicParameters();
@@ -62,20 +67,20 @@ namespace EngLabAPI.Repository
             if (roleRank == 1)
             {
                 query = @"
-            SELECT * 
-            FROM Staff s
-            INNER JOIN StaffRole sr ON s.RoleId = sr.Id
-            WHERE 1=1
-        ";
+                SELECT * 
+                FROM Staff s
+                INNER JOIN StaffRole sr ON s.RoleId = sr.Id
+                WHERE 1=1
+                ";
             }
             else
             {
                 query = @"
-            SELECT * 
-            FROM Staff s
-            INNER JOIN StaffRole sr ON s.RoleId = sr.Id
-            WHERE sr.Rank > @RoleRank
-        ";
+                SELECT * 
+                FROM Staff s
+                INNER JOIN StaffRole sr ON s.RoleId = sr.Id
+                WHERE sr.Rank > @RoleRank
+                ";
 
                 parameters.Add("RoleRank", roleRank);
             }
@@ -91,8 +96,8 @@ namespace EngLabAPI.Repository
                 parameters.Add("Offset", (page - 1) * pageSize);
                 parameters.Add("PageSize", pageSize);
                 query += @"
-            ORDER BY s.FullName -- You should choose an appropriate column to order by
-            OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+                ORDER BY s.FullName 
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
         ";
             }
 
@@ -123,12 +128,17 @@ namespace EngLabAPI.Repository
             return await _connection.ExecuteAsync(query, parameters) > 0;
         }
 
-        public async Task<IEnumerable<StaffRole>> GetAllRolesAsync(int? userId)
+        public async Task<IEnumerable<StaffRole>> GetAllRolesAsync(int userId)
         {
 
             var queryUserRoleRank = @"SELECT sr.Rank FROM StaffRole sr INNER JOIN Staff s ON s.RoleId = sr.Id WHERE s.Id = @UserId";
 
             var roleRank = await _connection.QueryFirstOrDefaultAsync<int>(queryUserRoleRank, new { UserId = userId });
+
+            if (roleRank == 0)
+            {
+                throw new Exception("User not found");
+            }
 
             var query = "";
 

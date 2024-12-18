@@ -27,7 +27,7 @@ namespace EngLabAPI.Controllers
         }
 
         [HttpGet("get-all-staff-role")]
-        public async Task<IActionResult> GetAllStaffRole(int? userId)
+        public async Task<IActionResult> GetAllStaffRole(int userId)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace EngLabAPI.Controllers
         }
 
         [HttpGet("get-by-filter")]
-        public async Task<IActionResult> GetAll(string? name, int? page, int? pageSize, int? userId)
+        public async Task<IActionResult> GetAll(string? name, int? page, int? pageSize, int userId)
         {
             try
             {
